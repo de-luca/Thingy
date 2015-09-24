@@ -1,0 +1,22 @@
+{
+    "name": "Thingy",
+    "version": "0.0.1",
+    "description": "A kinda blogging platform",
+    "main": "main.js",
+    "scripts": {
+      "start": "node main.js"
+    },
+    "dependencies": {
+        "ejs": "^2.3.1",
+        "express": "~4.9.x",
+        "redis": "~0.12.1",
+        "body-parser": "~1.13.3",
+        "socket.io": "~1.3.6",
+        "marked": "~0.3.5",
+        "colors": "~1.1.2"
+    },
+    "engines": {
+        "node": "0.12.7"
+    },
+    "license": "BSD-2-Clause"
+}
