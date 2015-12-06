@@ -100,7 +100,7 @@ app.get('/list/:key', function(request, response) {
           } else {
             reply.forEach(function(val, index, array) {
               cli.hgetall(val, function(err, reply) {
-                posts += reply.timestamp + ":" + reply.text.substr(0, reply.text.indexOf('\n')) + "...\n";
+                posts += reply.timestamp + ":" + reply.text.substr(0, reply.text.indexOf('<br>')) + "...\n";
                 if(index === array.length - 1) {
                   console.log(('[LIST ENTRY POINT]'.bold + ' Request accepted - List sent').green);
                   response.status(200).send(posts);
