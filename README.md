@@ -38,9 +38,7 @@ The project is intended to be used with Heroku, so it uses the `process.env` arr
 - **THINGY_SUBTITLE**: This is a string representing an array of strings (parsed on startup) containing your subtitles.
 - **THINGY_KEY**: This is the key you use to protect your Thing.
 - **THINGY_POST_MAN_USER_AGENT**: This is the user agent regex you want to use when posting/deleting.
-- **REDIS_URL**: (Auto generated) This is the redis connection string.
-
-*For local dev, Heroku tool belt is used so it can "inject" .env value for you.*
+- **REDIS_URL**: (Auto generated) This is the Redis connection string.
 
 The PostMan
 -----
