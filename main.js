@@ -1,15 +1,17 @@
-var express = require('express');
-var app = express();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
-var bodyParser = require('body-parser');
-var fs = require('fs');
-var marked = require('marked');
-var colors = require('colors');
-var redis = require('redis');
+'use strict';
+
+const express = require('express');
+const app = express();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+const bodyParser = require('body-parser');
+const fs = require('fs');
+const marked = require('marked');
+const colors = require('colors');
+const redis = require('redis');
 
 // CONFIGURATION STUFF
-var config = {
+let config = {
   THINGY_TITLE: process.env.THINGY_TITLE,
   THINGY_SUBTITLE: JSON.parse(process.env.THINGY_SUBTITLE),
   THINGY_KEY: process.env.THINGY_KEY,
@@ -17,7 +19,7 @@ var config = {
 };
 
 // REDIS STUFF
-var cli;
+let cli;
 if(process.env.REDIS_URL) {
   var credentials = require("url").parse(process.env.REDIS_URL);
   cli = redis.createClient(credentials.port, credentials.hostname);
