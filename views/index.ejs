@@ -12,15 +12,14 @@
         </div>
         <% include parts/post.ejs %>
         <div id="posts">
-            <% if(data === null) { %>
+            <% if(!data) { %>
                 <p id="none">No post for now... How sad...</p>
             <% } else {
                 var date;
-                data.forEach(function(post, index) {
-                    date = new Date(parseInt(post.timestamp)).toString(); %>
+                data.forEach(function(post, index) { %>
                     <blockquote <% if(index%2 !== 0) { %>class="blockquote-reverse"<% }%>>
                         <p><%- post.text %></p>
-                        <p><small><em><%= date %></em></small></p>
+                        <p><small><em><%= post.date %></em></small></p>
                     </blockquote>
             <% })}; %>
         </div>
