@@ -29,7 +29,8 @@ http.listen((process.env.PORT || 5000), function() {
 });
 
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(__dirname + '/resources'));
+app.use('/resources', express.static(__dirname + '/node_modules/bootstrap/dist'));
+app.use('/resources', express.static(__dirname + '/node_modules/jquery/dist'));
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
