@@ -5,10 +5,10 @@ const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const bodyParser = require('body-parser');
-const fs = require('fs');
 const marked = require('marked');
 const Datastore = require('nedb');
 const auth = require('basic-auth');
+const crypto = require('crypto');
 
 let postsDB = new Datastore({
   filename: __dirname+'/db/posts',
@@ -18,10 +18,18 @@ let bannedDB = new Datastore({
   filename: __dirname+'/db/banned',
   autoload: true
 });
+let usersDB = new Datastore({
+  filename: __dirname+'/db/users',
+  autoload: true
+});
 
 let config = {
   THINGY_TITLE: process.env.THINGY_TITLE,
   THINGY_SUBTITLE: JSON.parse(process.env.THINGY_SUBTITLE)
+};
+
+let checkAuth = function(pass, salt, hash) {
+  return salt+':'+crypto.pbkdf2Sync(pass, salt, 10000, 512, 'sha512').toString('hex') === hash;
 };
 
 http.listen((process.env.PORT || 5000), function() {
@@ -46,8 +54,7 @@ app.all('*', function(request, response, next) {
 });
 
 app.get('/', function(request, response) {
-  postsDB.find({}, function(err, posts) {
-    console.log(posts);
+  postsDB.find({}).sort({date: -1}).exec(function(err, posts) {
     response.render('index', {
       title: config.THINGY_TITLE,
       subtitle: config.THINGY_SUBTITLE[Math.floor(Math.random()*(config.THINGY_SUBTITLE.length-0)+0)],
@@ -56,10 +63,27 @@ app.get('/', function(request, response) {
   });
 });
 
-
-// TODO: POST ENTRY POINT
-// app.post('/', function(request, response) {
-// });
+app.post('/', function(request, response) {
+  var credentials = auth(request);
+  usersDB.findOne({_id: credentials.name}, function(err, doc) {
+    if(checkAuth(credentials.pass, doc.pass.split(':')[0], doc.pass)) {
+      postsDB.insert({date: new Date(), text: marked(request.body.text)}, function(err) {
+        if(err)
+          response.status(500).send();
+        else
+          response.status(200).send();
+      });
+    } else {
+      let ip = request.headers['x-forwarded-for'] || request.connection.remoteAddress;
+      bannedDB.insert({_id: ip}, function(err) {
+        if(err)
+          response.status(500).send();
+        else
+          response.status(401).send();
+      });
+    }
+  });
+});
 
 // TODO: DELETE ENTRY POINT
 // app.delete('/', function(request, response) {
