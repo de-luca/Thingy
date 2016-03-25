@@ -86,5 +86,24 @@ app.post('/', function(request, response) {
 });
 
 // TODO: DELETE ENTRY POINT
-// app.delete('/', function(request, response) {
-// });
+app.delete('/', function(request, response) {
+  var credentials = auth(request);
+  usersDB.findOne({_id: credentials.name}, function(err, doc) {
+    if(checkAuth(credentials.pass, doc.pass.split(':')[0], doc.pass)) {
+      postsDB.remove({_id: request.body.id}, function(err) {
+        if(err)
+          response.status(500).send();
+        else
+          response.status(200).send();
+      });
+    } else {
+      let ip = request.headers['x-forwarded-for'] || request.connection.remoteAddress;
+      bannedDB.insert({_id: ip}, function(err) {
+        if(err)
+          response.status(500).send();
+        else
+          response.status(401).send();
+      });
+    }
+  });
+});
