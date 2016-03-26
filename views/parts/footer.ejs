@@ -1,7 +1,27 @@
 <footer class="footer">
-    <div class="container">
-        <p class="text-muted">
-            Powered by <a href="#">Thingy</a> <small>by <a href="http://de-luca.io" target="_blank">Bastien de Luca</a></small>
-        </p>
-    </div>
+  <div class="container">
+    <p class="text-muted">
+      Powered by <a href="https://github.com/de-luca/Thingy" target="_blank">Thingy</a> <small>by <a href="http://de-luca.io" target="_blank">Bastien de Luca</a></small>
+    </p>
+  </div>
 </footer>
+
+<script src="/resources/jquery.min.js"></script>
+<script src="/resources/js/bootstrap.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  $('[data-toggle="tooltip"]').tooltip();
+  var socket = io();
+  socket.on('update', function(msg) {
+    var template = $('#template').clone();
+    template.find('#text').html(msg.text);
+    template.find('#timestamp').html(date = new Date(parseInt(msg.timestamp)).toString());
+    if(!$('#posts blockquote').first().hasClass('blockquote-reverse') && $("#none").length == 0)
+        template.addClass('blockquote-reverse');
+    if($("#none").length != 0)
+        $("#none").remove();
+    template.prependTo('#posts');
+    template.slideDown();
+    template.removeAttr('id');
+  });
+</script>

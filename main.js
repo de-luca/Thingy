@@ -23,11 +23,6 @@ let usersDB = new Datastore({
   autoload: true
 });
 
-let config = {
-  THINGY_TITLE: process.env.THINGY_TITLE,
-  THINGY_SUBTITLE: JSON.parse(process.env.THINGY_SUBTITLE)
-};
-
 let checkAuth = function(pass, salt, hash) {
   return salt+':'+crypto.pbkdf2Sync(pass, salt, 10000, 512, 'sha512').toString('hex') === hash;
 };
@@ -56,8 +51,8 @@ app.all('*', function(request, response, next) {
 app.get('/', function(request, response) {
   postsDB.find({}).sort({date: -1}).exec(function(err, posts) {
     response.render('index', {
-      title: config.THINGY_TITLE,
-      subtitle: config.THINGY_SUBTITLE[Math.floor(Math.random()*(config.THINGY_SUBTITLE.length-0)+0)],
+      title: process.env.THINGY_TITLE,
+      subtitles: JSON.parse(process.env.THINGY_SUBTITLE),
       data: posts
     });
   });
@@ -67,7 +62,7 @@ app.post('/', function(request, response) {
   var credentials = auth(request);
   usersDB.findOne({_id: credentials.name}, function(err, doc) {
     if(checkAuth(credentials.pass, doc.pass.split(':')[0], doc.pass)) {
-      postsDB.insert({date: new Date(), text: marked(request.body.text)}, function(err) {
+      postsDB.insert({date: new Date(), text: marked(request.body.text), by: credentials.name}, function(err) {
         if(err)
           response.status(500).send();
         else
@@ -85,7 +80,6 @@ app.post('/', function(request, response) {
   });
 });
 
-// TODO: DELETE ENTRY POINT
 app.delete('/', function(request, response) {
   var credentials = auth(request);
   usersDB.findOne({_id: credentials.name}, function(err, doc) {
