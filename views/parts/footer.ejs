@@ -12,16 +12,23 @@
 <script>
   $('[data-toggle="tooltip"]').tooltip();
   var socket = io();
-  socket.on('update', function(msg) {
+  socket.on('post', function(post) {
     var template = $('#template').clone();
-    template.find('#text').html(msg.text);
-    template.find('#timestamp').html(date = new Date(parseInt(msg.timestamp)).toString());
+    template.find('#text').html(post.text).removeAttr('id');
+    template.find('#by').html(post.by).removeAttr('id');
+    template.find('#timestamp').html(new Date(post.date)).removeAttr('id');
+    template.find('#quote-footer').attr('title', post._id).removeAttr('id');
     if(!$('#posts blockquote').first().hasClass('blockquote-reverse') && $("#none").length == 0)
         template.addClass('blockquote-reverse');
     if($("#none").length != 0)
         $("#none").remove();
     template.prependTo('#posts');
     template.slideDown();
-    template.removeAttr('id');
+    template.attr('id', post._id);
+  });
+  socket.on('delete', function(id) {
+    $('#'+id).slideUp(function() {
+      this.remove();
+    });
   });
 </script>
