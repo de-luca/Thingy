@@ -62,6 +62,10 @@ app.post('/', function(request, response) {
   var credentials = auth(request);
   usersDB.findOne({_id: credentials.name}, function(err, doc) {
     if(checkAuth(credentials.pass, doc.pass.split(':')[0], doc.pass)) {
+      if(!request.body.text) {
+        response.status(500).send();
+        return;
+      }
       postsDB.insert({date: new Date(), text: marked(request.body.text), by: credentials.name}, function(err, post) {
         if(err) {
           response.status(500).send();
@@ -86,6 +90,10 @@ app.delete('/', function(request, response) {
   var credentials = auth(request);
   usersDB.findOne({_id: credentials.name}, function(err, doc) {
     if(checkAuth(credentials.pass, doc.pass.split(':')[0], doc.pass)) {
+      if(!request.body.id) {
+        response.status(500).send();
+        return;
+      }
       postsDB.remove({_id: request.body.id}, function(err) {
         if(err) {
           response.status(500).send();
