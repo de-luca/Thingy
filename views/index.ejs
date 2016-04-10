@@ -18,9 +18,9 @@
           <p id="none">No post for now... How sad...</p>
         <% } else {
           data.forEach(function(post, index) { %>
-            <blockquote id="<%= post._id %>"<% if(index%2 !== 0) { %> class="blockquote-reverse"<% }%>>
+            <blockquote id="<%= post.id %>"<% if(index%2 !== 0) { %> class="blockquote-reverse"<% }%>>
               <div><%- post.text %></div>
-              <p title="<%= post._id %>"><small><strong><%= post.by %></strong> - <em><%= post.date %></em></small></p>
+              <p title="<%= post.id %>"><small><strong><%= post.by %></strong> - <em><%= post.date %></em></small></p>
             </blockquote>
         <% })}; %>
       </div>
