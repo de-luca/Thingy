@@ -91,6 +91,10 @@ app.post('/', function(request, response) {
         done();
         banHammer(request.headers['x-forwarded-for'] || request.connection.remoteAddress, () => response.status(401).send());
       } else {
+        if(!request.body.text) {
+          response.status(500).send();
+          return;
+        }
         client.query({
           text: `WITH p AS (
                    INSERT INTO post (text, by) VALUES ($1, $2) RETURNING *
@@ -124,6 +128,10 @@ app.delete('/', function(request, response) {
         done();
         banHammer(request.headers['x-forwarded-for'] || request.connection.remoteAddress, () => response.status(401).send());
       } else {
+        if(!request.body.id) {
+          response.status(500).send();
+          return;
+        }
         client.query({
           text: "DELETE FROM post WHERE id = $1",
           values: [request.body.id]
