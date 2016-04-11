@@ -26,7 +26,6 @@ Because there's no web interface, Thingy comes with 3 endpoints you can send req
 - Markdown supported (and everything the markdown parser can handle)
 - Supports multiple writers
 - Trigger easy IP banning (any request not perfectly sent has it's IP banned. IP banned should not read what you have to say.)
-- Nedb based
 - Exists (yep that's a feature!)
 
 ## Configuration
@@ -38,9 +37,7 @@ The project is intended to be used with Heroku, so it uses the `process.env` arr
 
 ## Add users
 
-You'll need to manually add your users in the file `/db/users`  
-Users entry should be like:
-`{"_id":"theusernamegoeshere","pass":"thehashedpasswordgoesthere"}`
+You'll need to manually add your users in the table `user` (check [this article](https://devcenter.heroku.com/articles/heroku-postgresql) for informations using Heroku).
 
 Here is the node script used to generate the hashed password:
 ```js
